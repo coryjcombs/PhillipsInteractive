@@ -12,15 +12,28 @@ ui <- fluidPage(
 
   titlePanel("Title Panel"),
 
-  sidebarLayout(position="right",
+  sidebarLayout(position="left",
+
     sidebarPanel(
-      h4("Sidebar Panel", align=''),
-      p("Sidebar text here."),
-      div(img(src="pc_scenarios.png", width=175), align='center')
+      #h3("Sidebar Panel", align=''),
+      p("Sidebar help text here."),
+      #div(img(src="pc_scenarios.png", width=175), align='center'),
+      selectInput("var",
+                  label="Choose a variable to test",
+                  choices=list("Beta 1",
+                                 "Beta 2",
+                                 "Beta 3"),
+                  selected="Beta 1"),
+      sliderInput("yearRange", label="Range of years to test",
+                  min=1949, max=2017, value=c(1949, 2017),
+                  sep="")
       ),
+
     mainPanel(
       h4("Main Panel", align=''),
-      p("Sidebar text here.")
+      p("Sidebar text here."),
+
+      textOutput("selectedVar")
       )
   )
 
@@ -29,7 +42,11 @@ ui <- fluidPage(
 # Define server logic
 server <- function(input, output) {
 
-
+  output$selectedVar <- renderText({
+    paste0("You are testing ", input$var,
+          " for the period ", input$yearRange[1],
+          " to ", input$yearRange[2], ".")
+  })
 
 }
 
