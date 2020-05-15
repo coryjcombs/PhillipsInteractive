@@ -33,7 +33,9 @@ ui <- fluidPage(
       h4("Main Panel", align=''),
       p("Sidebar text here."),
 
-      textOutput("selectedVar")
+      textOutput("selectedVar"),
+
+      textOutput("yearDiff")
       )
   )
 
@@ -46,6 +48,12 @@ server <- function(input, output) {
     paste0("You are testing ", input$var,
           " for the period ", input$yearRange[1],
           " to ", input$yearRange[2], ".")
+  })
+
+  output$yearDiff <- renderText({
+    paste0("The period is ",
+           input$yearRange[2] - input$yearRange[1],
+           " years long.")
   })
 
 }
