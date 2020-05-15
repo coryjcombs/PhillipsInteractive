@@ -8,13 +8,20 @@ library(shiny)
 # Define UI
 ui <- fluidPage(
 
-  shinythemes::themeSelector(),
+  #shinythemes::themeSelector(),
 
-  titlePanel("Title Here"),
+  titlePanel("Title Panel"),
 
   sidebarLayout(position="right",
-    sidebarPanel("Sidebar Panel"),
-    mainPanel("Main Panel")
+    sidebarPanel(
+      h4("Sidebar Panel", align=''),
+      p("Sidebar text here."),
+      div(img(src="pc_scenarios.png", width=175), align='center')
+      ),
+    mainPanel(
+      h4("Main Panel", align=''),
+      p("Sidebar text here.")
+      )
   )
 
 )
