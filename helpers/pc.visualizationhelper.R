@@ -5,9 +5,6 @@
 
 #### Packages and Seed ####
 
-# Set working directory
-setwd("C:/Users/Cory/Documents/R/PhillipsInteractive/")
-
 library(tidyverse) # Includes dplyr, tidyr, readr, tibble, ggplot2
 library(ggpubr) # For further ggplot customization
 library(lubridate) # For time series data management

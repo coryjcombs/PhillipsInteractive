@@ -1,5 +1,5 @@
-# Package: pc.analysis
-# Title: Phillips Curve Analysis
+# Package: pc.datahelper
+# Title: Phillips Curve Analysis - Data Helper
 # Version: 0.1
 # Authors@R: person("Cory", "Combs", email = "cory.j.combs@outlook.com",
 #                   role = c("aut", "cre"))
