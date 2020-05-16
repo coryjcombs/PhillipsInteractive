@@ -1,19 +1,25 @@
-# Info Section
+# Phillips Curve Analysis              #
+# R Shiny App for Interactive Analysis #
+# May 15, 2020                         #
 
 # Packages #
 
 library(shiny)
+library(shinythemes)
 source("helpers/pc.datahelper.R")
 source("helpers/pc.visualizationhelper.R")
 
 # Define UI
 ui <- navbarPage("Empirical Analysis of the Phillips Curve Model",
+
+  theme = shinytheme("flatly"),
+
   tabPanel("Inflation Scenarios",
 
            sidebarLayout(position="right",
 
                          sidebarPanel(
-                           h4("Modeling Inflation", align=''),
+                           h4("Scenario Analysis", align=''),
                            p("In this tab, you can test the relationship using various models of expected inflation. Compare trends using various values of Beta, where Expected Inflation = Inflation + Beta*(Unemployment - Natural Rate of Unemployment):"),
                            numericInput("b1",
                                         "label" = "Beta 1",
@@ -33,7 +39,6 @@ ui <- navbarPage("Empirical Analysis of the Phillips Curve Model",
                            sliderInput("yearRangeScenarios", label="Range of years to test",
                                        min=1949, max=2017, value=c(1949, 2017),
                                        sep=""),
-                           br(),
                            textOutput("selectionTextScenarios")
                          ),
 
@@ -41,7 +46,7 @@ ui <- navbarPage("Empirical Analysis of the Phillips Curve Model",
                            span(strong("The Phillips Curve model")),
                            span("posits that unemployment and inflation have an inverse relationship. High inflation should correlate with low unemployment, and vice versa. Empirical analysis, however, suggests that this relationship has rarely held in the post-WWII United States."),
                            br(), br(),
-                           p("Use the panel on the right to test the Phillips Curve model using historical data over various time periods and using multiple models of inflation."),
+                           p("Use the control panel to test the Phillips Curve model using historical data over various time periods and using multiple models of expected inflation."),
                            hr(),
                            plotOutput("scenariosPlot")
                          )
@@ -54,8 +59,9 @@ ui <- navbarPage("Empirical Analysis of the Phillips Curve Model",
            sidebarLayout(position="right",
 
                          sidebarPanel(
-                           h4("Modeling Inflation", align=''),
-                           p("In this tab, you can test the relationship using various models of expected inflation. Compare trends using various values of Beta, where Expected Inflation = Inflation + Beta*(Unemployment - Natural Rate of Unemployment):"),
+                           h4("Standard Model Exploration", align=''),
+                           p("U3 is the most commonly used metric of unemployment, and is determined on a monthly basis by BLS. It includes unemployed individuals who are actively seeking work. Unlike U6, however, it does not account for discouraged workers or the underemployed."),
+                           p("Use the slider below to test the hypothesized relationship between U3 and inflation for various time periods. Notice that a negative relationship does appear for much of the 1960s, but is hard to find in most other cases."),
                            sliderInput("yearRangeInfl", label="Range of years to test",
                                        min=1949, max=2017, value=c(1949, 2017),
                                        sep=""),
@@ -67,7 +73,7 @@ ui <- navbarPage("Empirical Analysis of the Phillips Curve Model",
                            span(strong("The Phillips Curve model")),
                            span("posits that unemployment and inflation have an inverse relationship. High inflation should correlate with low unemployment, and vice versa. Empirical analysis, however, suggests that this relationship has rarely held in the post-WWII United States."),
                            br(), br(),
-                           p("Use the panel on the right to explore different types of unemployment data over various time periods"),
+                           p("Use the control panel to test the Phillips Curve model over various time periods using standardized inflation figures and U3 unemployment."),
                            hr(),
                            plotOutput("inflPlot")
                          )
@@ -80,8 +86,10 @@ ui <- navbarPage("Empirical Analysis of the Phillips Curve Model",
            sidebarLayout(position="right",
 
                          sidebarPanel(
-                           h4("Modeling Inflation", align=''),
-                           p("In this tab, you can test the relationship using various models of expected inflation. Compare trends using various values of Beta, where Expected Inflation = Inflation + Beta*(Unemployment - Natural Rate of Unemployment):"),
+                           h4("Time Series Exploration", align=''),
+                           p("In this tab you can explore time series data of the inflation and unemployment rates over a broad swathe of contemporary U.S. history. The figure uses U3 unemployment figures."),
+                           p("Notice the relative degrees of change in each metric: unemployment varies considerably more dramatically than inflation."),
+                           p("As an exercise, locate notable recessions and bubbles in the timeline; what happened to each metric in each period? Does the relationship posited by the Phillips Curve model hold more for these periods than others?"),
                            sliderInput("yearRangeIU", label="Range of years to test",
                                        min=1949, max=2017, value=c(1949, 2017),
                                        sep=""),
@@ -93,7 +101,7 @@ ui <- navbarPage("Empirical Analysis of the Phillips Curve Model",
                            span(strong("The Phillips Curve model")),
                            span("posits that unemployment and inflation have an inverse relationship. High inflation should correlate with low unemployment, and vice versa. Empirical analysis, however, suggests that this relationship has rarely held in the post-WWII United States."),
                            br(), br(),
-                           p("Use the panel on the right to conduct linear and nonlinear regressions on historical data over various time periods."),
+                           p("Use the control panel to view standardized inflation and U3 unemployment data over various historical periods."),
                            hr(),
                            plotOutput("influ3Plot")
                          )
@@ -106,8 +114,10 @@ ui <- navbarPage("Empirical Analysis of the Phillips Curve Model",
            sidebarLayout(position="right",
 
                          sidebarPanel(
-                           h4("Modeling Inflation", align=''),
-                           p("In this tab, you can test the relationship using various models of expected inflation. Compare trends using various values of Beta, where Expected Inflation = Inflation + Beta*(Unemployment - Natural Rate of Unemployment):"),
+                           h4("Natural Rate of Unemployment Exploration", align=''),
+                           p("The natural rate of unemployment indicates structural economic effects, such as the displacement of manual labor by technology or shifts in demand for labor in context of global trade. It can vary significantly from the observed (actual) rate of unemployment, whether considering U3, U6, or other alternatives."),
+                           p("Here, you can explore the change in the natural rate of unemployment over time. Notice that it is far smoother than U3 or U6, and generally does experience spikes in the same way. This is a reasonable outcome, as structural changes should, in principle, take longer to change than other, more short-term drivers of unemployment."),
+                           p("As an exercise, compare it to another unemployment rate. Does it still follow the same trends? How does it track with inflation?"),
                            sliderInput("yearRangeUnemp", label="Range of years to test",
                                        min=1949, max=2017, value=c(1949, 2017),
                                        sep=""),
@@ -119,7 +129,7 @@ ui <- navbarPage("Empirical Analysis of the Phillips Curve Model",
                            span(strong("The Phillips Curve model")),
                            span("posits that unemployment and inflation have an inverse relationship. High inflation should correlate with low unemployment, and vice versa. Empirical analysis, however, suggests that this relationship has rarely held in the post-WWII United States."),
                            br(), br(),
-                           p("Use the panel on the right to conduct linear and nonlinear regressions on historical data over various time periods."),
+                           p("Use the control panel to view the natural rate of unemployment over various historical periods."),
                            hr(),
                            #plotOutput("u3Plot"),
                            #plotOutput("u6Plot"),
@@ -135,13 +145,14 @@ ui <- navbarPage("Empirical Analysis of the Phillips Curve Model",
            sidebarLayout(position="right",
 
                          sidebarPanel(
-                           h4("Modeling Inflation", align=''),
-                           p("In this tab, you can test the relationship using various models of expected inflation. Compare trends using various values of Beta, where Expected Inflation = Inflation + Beta*(Unemployment - Natural Rate of Unemployment):"),
+                           h4("Regression Analysis", align=''),
+                           p("Beyond graphical analysis, regression analysis can provide a quantitative indication of whether variables demonstrate a significant relationship."),
+                           p("In this tab, see how a linear regression and a nonlinear regression - in this case quadratic - compare. Does either provide more robust results, or indicate a significant trend?"),
+                           p("In all models, under-fitting and over-fitting are key issues. Note the statistical significance of the regression results and match with expectations from the graphical analysis to consider how each model is performing over the selected time periods (by decade and for the full period)."),
                            br(),
                            radioButtons("regPlotButtons", label="Select linear or nonlinear regression.",
                                         choices=c("Linear", "Nonlinear"),
-                                        selected="Linear"),
-                           textOutput("selectionTextReg")
+                                        selected="Linear")
                          ),
 
                          mainPanel(
@@ -162,8 +173,6 @@ ui <- navbarPage("Empirical Analysis of the Phillips Curve Model",
            )
 
   )
-
-  #shinythemes::themeSelector(),
 
 )
 
