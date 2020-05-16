@@ -1,5 +1,5 @@
 # Package: pc.datahelper
-# Title: Phillips Curve Analysis - Data Helper
+# Title: Phillips Curve Analysis - Data
 # Version: 0.1
 # Authors@R: person("Cory", "Combs", email = "cory.j.combs@outlook.com",
 #                   role = c("aut", "cre"))
@@ -449,10 +449,11 @@ plot.unemployment <- function(data = pc_u6, period_start = 2009, period_end = 20
     scale_color_manual(values = c(custom_palette[1], custom_palette[2])) +
     labs(title = "Comparison of U3 and U6 Unemployment Rates Over Time",
          subtitle = paste("From", period_start, "to", period_end),
-         x = "Year",
-         y = "Unemployment Rates",
+         x = "U3 Unemployment Rate",
+         y = "U6 Unemployment Rate",
          caption = "Sources: FI Consulting, Federal Reserve Bank of St. Louis, BLS") +
-    scale_y_continuous(labels = function(x) format(paste0(x, "%"))) +
+    scale_x_continuous(labels = function(x) format(paste0(x, "%"))) +
+    scale_y_continuous(labels = function(y) format(paste0(y, "%"))) +
     theme_minimal() +
     theme(plot.title = element_text(hjust = 0.5), # Centers title
           plot.subtitle = element_text(hjust = 0.5),

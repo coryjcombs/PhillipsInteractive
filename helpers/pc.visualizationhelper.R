@@ -12,7 +12,7 @@ library(zoo) # "Z's orderded observations" package for time series
 library(reshape2) # For melt function
 library(stargazer) # For multi-format regression table outputs
 library(plotly) # For adding interactivity to plots
-source("helpers/pc.analysis.R") # Custom functions for Phillips curve analysis
+source("helpers/pc.datahelper.R") # Custom functions for Phillips curve analysis
 
 set.seed(42) # Ensures reproducibility given random elements
 
@@ -30,7 +30,7 @@ grain <- "monthly" # Incorporates FRED labor force data to supplement FI Consult
 #grain <- "quarterly" # Includes only FI Consulting data
 
 # Specify directory into which regression tables should be saved
-reg_dir <- "./" # Current working directory
+reg_dir <- "./regression/" # Regression subfolder
 # Specify document type for regression table export
 reg_doctype <- "html"
 
@@ -67,27 +67,7 @@ pc <- prepare.pc.data(data = pc_raw)
 #  could be U6 unemployment rates, which include discouraged workers and other parts of the population excluded
 #  from the base U3 data. U6 data will also be analyzed.
 
-# Jointly plot the inflation rate and unemployment rate over time for the specified period
-plot_infl_u3 <- plot.infl.u3(data = pc, period_start = 1948, period_end = 2017)
-plot_infl_u3
-
-# Plot inflation over time for the specified period
-plot_inflation <- plot.inflation(data = pc, period_start = 1948, period_end = 2017)
-plot_inflation
-
-# Plot the U3 unemployment rate over time for the specified period
-plot_u3 <- plot.u3(data = pc, period_start = 1949, period_end = 2007)
-plot_u3
-
-# Create plots of inflation over time for each decade in the dataset
-# To access a plot for a single decade, select as multiplot_infl_decades[i]
-multiplot_infl_decades <- multiplot.infl.decades(data = pc)
-multiplot_infl_decades
-
-# Create plots of unemployment (U3) over time for each decade in the dataset
-# To access a plot for a single decade, select as multiplot_unemp_decades[i]
-multiplot_unemp_decades <- multiplot.unemp.decades(data = pc)
-multiplot_unemp_decades
+# All exploratory analysis moved into app.R for reactive display
 
 
 #### Part 2: Phillips Curve Analysis with U3 Unemployment Rate ####
@@ -97,19 +77,6 @@ multiplot_unemp_decades
 # RESULT: Statistical and visual analysis of the full range of periods between 1949 and 2017, for which
 #  data are available, demonstrate immense variation, with no consistent pattern of the curve enduring.
 #  The evidence suggests the basic formulation of Phillips' theory does not hold for the U.S. today.
-
-# Plot the base Phillips curve for the specified periods
-plot_pc_full <- plot.pc(data = pc, period_start = 1949, period_end = 2017)
-plot_pc_full # The full time series shows the expected result that the Phillips curve does not hold in the long run
-
-plot_pc_60s <- plot.pc(data = pc, period_start = 1960, period_end = 1969)
-plot_pc_60s # Demonstration of evidence for the Phillips curve in the 1960s
-
-plot_pc_80s <- plot.pc(data = pc, period_start = 1980, period_end = 1989)
-plot_pc_80s # Demonstration of evidence against the Phillips curve in the 1980s
-
-plot_pc_00s <- plot.pc(data = pc, period_start = 2000, period_end = 2017)
-plot_pc_00s # Demonstration of evidence against the Phillips curve in the 1960s; nearly identical from 2000-2009
 
 # Construct linear models for the specified periods
 pc_model_linear_50s <- pc.model.linear(data = pc, period_start = 1950, period_end = 1959)
@@ -121,22 +88,6 @@ pc_model_linear_00s <- pc.model.linear(data = pc, period_start = 2000, period_en
 pc_model_linear_10s <- pc.model.linear(data = pc, period_start = 2010, period_end = 2017)
 pc_model_linear_full <- pc.model.linear(data = pc, period_start = 1949, period_end = 2017)
 
-# Summarize details of particular models of interest
-summary(pc_model_linear_60s) # Unclear statistical relationship even in period of strong association
-summary(pc_model_linear_80s)
-summary(pc_model_linear_10s)
-
-# Create a regression table displaying all linear regression results
-stargazer(pc_model_linear_50s, pc_model_linear_60s, pc_model_linear_70s,
-          pc_model_linear_80s, pc_model_linear_90s, pc_model_linear_00s,
-          pc_model_linear_10s, pc_model_linear_full,
-          type = reg_doctype,
-          title = "Linear Phillips Curve Regressions by Decade, 1950-2017",
-          out = paste0(reg_dir,"pc_linear_reg_table.htm"),
-          flip = TRUE,
-          dep.var.labels = c("Inflation Rate"),
-          covariate.labels = c("U3 Unemployment Rate", "Constant"))
-
 # Construct nonlinear models for the specified periods with formula: inflation ~ u3 + I(u3^2)
 pc_model_nonlinear_50s <- pc.model.nonlinear(data = pc, period_start = 1950, period_end = 1959)
 pc_model_nonlinear_60s <- pc.model.nonlinear(data = pc, period_start = 1960, period_end = 1969)
@@ -146,21 +97,6 @@ pc_model_nonlinear_90s <- pc.model.nonlinear(data = pc, period_start = 1990, per
 pc_model_nonlinear_00s <- pc.model.nonlinear(data = pc, period_start = 2000, period_end = 2009)
 pc_model_nonlinear_10s <- pc.model.nonlinear(data = pc, period_start = 2010, period_end = 2017)
 pc_model_nonlinear_full <- pc.model.nonlinear(data = pc, period_start = 1949, period_end = 2017)
-
-# Summarize details of particular models of interest
-summary(pc_model_nonlinear_60s) # Unclear statistical relationship even in period of strong association
-summary(pc_model_nonlinear_80s)
-summary(pc_model_nonlinear_10s)
-
-# Create regression table displaying all nonlinear regression results
-stargazer(pc_model_nonlinear_50s, pc_model_nonlinear_60s, pc_model_nonlinear_70s,
-          pc_model_nonlinear_80s, pc_model_nonlinear_90s, pc_model_nonlinear_00s,
-          pc_model_nonlinear_10s, pc_model_nonlinear_full,
-          type = reg_doctype,
-          title = "Nonlinear Phillips Curve Regressions by Decade, 1950-2017",
-          out = paste0(reg_dir,"pc_nonlinear_reg_table.htm"),
-          dep.var.labels = c("Inflation Rate"),
-          covariate.labels = c("U3 Unemployment Rate", "Square of U3", "Constant"))
 
 
 #### Part 3: Expected Inflation and Natural Rate of Unemployment ####
@@ -177,51 +113,9 @@ fred_nrou_clean <- prepare.nrou.data(data = fred_nrou)
 # Join natural unemployment rate data with base phillips curve data
 pc_nrou <- join.nrou.data(left = pc, right = fred_nrou_clean)
 
-# Plot the natural unemployment rate over time for the specified period
-plot_nrou <- plot.nrou(data = pc_nrou, period_start = 1949, period_end = 2017)
-plot_nrou
-
-# Plot the Phillips curve using the natural unemployment rate over time for the specified period
-plot_pc_nrou_full <- plot.pc.nrou(data = pc_nrou, period_start = 1949, period_end = 2017)
-plot_pc_nrou_full
-
-plot_pc_nrou_60s <- plot.pc.nrou(data = pc_nrou, period_start = 1960, period_end = 2069)
-plot_pc_nrou_60s
-
-plot_pc_nrou_80s <- plot.pc.nrou(data = pc_nrou, period_start = 1980, period_end = 2089)
-plot_pc_nrou_80s
-
 ## Expected Inflation Scenarios
 
-# Create three scenarios for expected inflation by specifying response parameters b1, b2, and b3
-# The below function calculates expected inflation as: infl_e = infl + b(U-U_n), where U is the unemployment rate,
-#  U_n is the natural unemployment rate, and b is the response parameter beta (three are modeled at a time)
-# It then plots Phillips curves with each modeled inflation rate for the specified period
-
-b1 <- 0.75
-b2 <- 1.5
-b3 <- 2.25
-
-# 1960-1969, when Phillips curve evidence appears strongest
-plot_infl_exp_nrou_60s <- plot.infl.exp.nrou(data = pc_nrou,
-                                         b1, b2, b3,
-                                         period_start = 1960, period_end = 1969,
-                                         method = "lm")
-plot_infl_exp_nrou_60s
-
-# 1980-1989, when Phillips curve evidence appears extremely weak
-plot_infl_exp_nrou_80s <- plot.infl.exp.nrou(data = pc_nrou,
-                                         b1, b2, b3,
-                                         period_start = 1980, period_end = 1989,
-                                         method = "lm")
-plot_infl_exp_nrou_80s
-
-# 1949-2017, all available years
-plot_infl_exp_nrou_full <- plot.infl.exp.nrou(data = pc_nrou,
-                                             b1, b2, b3,
-                                             period_start = 1949, period_end = 2017,
-                                             method = "lm")
-plot_infl_exp_nrou_full
+# Expected Inflation Scenario plots moved into app.R for reactive display
 
 
 #### Part 4: U6 Unemployment Rate ####
@@ -239,21 +133,11 @@ bls_u6_clean <- prepare.u6.data(data = bls_u6)
 # Join U6 unemployment rate data with base phillips curve data
 pc_u6 <- join.u6.data(left = pc, right = bls_u6_clean)
 
-# Plot the U6 unemployment rate over time for the specified period
-plot_u6 <- plot.u6(data = pc_u6, period_start = 2009, period_end = 2017)
-plot_u6
-
-# Plot both the U3 and U6 unemployment rates over time for the specified period
-plot_unemployment <- plot.unemployment(data = pc_u6, period_start = 2009, period_end = 2017)
-plot_unemployment
-
-# Plot the Phillips curve using the U6 unemployment rate over time for the specified period
-plot_pc_u6 <- plot.pc.u6(data = pc_u6, period_start = 2009, period_end = 2017)
-plot_pc_u6
+# Unemployment plots moved into app.R for reactive display
 
 # Measure and confirm the high and statistically significant correlation between U3 and U6
 unemp_linear_reg <- lm(pc_u6$u3 ~ pc_u6$u6) # Demonstrates high statistical closeness of the datasets
-summary(unemp_linear_reg)
+#summary(unemp_linear_reg)
 
 
 #### Supplement: Interactive Graphs ####
