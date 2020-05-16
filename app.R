@@ -30,11 +30,11 @@ ui <- navbarPage("Empirical Analysis of the Phillips Curve Model",
                                         value = 2.25,
                                         step = 0.125,
                                         width = "85px"),
-                           sliderInput("yearRange", label="Range of years to test",
+                           sliderInput("yearRangeScenarios", label="Range of years to test",
                                        min=1949, max=2017, value=c(1949, 2017),
                                        sep=""),
                            br(),
-                           textOutput("selectionText")
+                           textOutput("selectionTextScenarios")
                          ),
 
                          mainPanel(
@@ -49,36 +49,18 @@ ui <- navbarPage("Empirical Analysis of the Phillips Curve Model",
 
   ),
 
-  tabPanel("Charting Unemployment",
+  tabPanel("Standardized Curve Tests",
 
            sidebarLayout(position="right",
 
                          sidebarPanel(
                            h4("Modeling Inflation", align=''),
-                           p("In this tab, you can test the relationship using various models of expected inflation. Compare trends using various values of Beta, where Expected Inflation = Inflation + Beta*(Unemployment - Natural Rate of Unemployment):")
-                           ),
-
-                         mainPanel(
-                           span(strong("The Phillips Curve model")),
-                           span("posits that unemployment and inflation have an inverse relationship. High inflation should correlate with low unemployment, and vice versa. Empirical analysis, however, suggests that this relationship has rarely held in the post-WWII United States."),
-                           br(), br(),
-                           p("Use the panel on the right to conduct linear and nonlinear regressions on historical data over various time periods."),
-                           hr(),
-                           plotOutput("u3Plot"),
-                           plotOutput("u6Plot"),
-                           plotOutput("u3u6Plot"),
-                         )
-           )
-
-  ),
-
-  tabPanel("Charting Inflation",
-
-           sidebarLayout(position="right",
-
-                         sidebarPanel(
-                           h4("Modeling Inflation", align=''),
-                           p("In this tab, you can test the relationship using various models of expected inflation. Compare trends using various values of Beta, where Expected Inflation = Inflation + Beta*(Unemployment - Natural Rate of Unemployment):")
+                           p("In this tab, you can test the relationship using various models of expected inflation. Compare trends using various values of Beta, where Expected Inflation = Inflation + Beta*(Unemployment - Natural Rate of Unemployment):"),
+                           sliderInput("yearRangeInfl", label="Range of years to test",
+                                       min=1949, max=2017, value=c(1949, 2017),
+                                       sep=""),
+                           br(),
+                           textOutput("selectionTextInfl")
                          ),
 
                          mainPanel(
@@ -87,8 +69,61 @@ ui <- navbarPage("Empirical Analysis of the Phillips Curve Model",
                            br(), br(),
                            p("Use the panel on the right to explore different types of unemployment data over various time periods"),
                            hr(),
-                           plotOutput("inflPlot"),
-                           plotOutput("influ3Plot"),
+                           plotOutput("inflPlot")
+                         )
+           )
+
+  ),
+
+  tabPanel("Time Series Data",
+
+           sidebarLayout(position="right",
+
+                         sidebarPanel(
+                           h4("Modeling Inflation", align=''),
+                           p("In this tab, you can test the relationship using various models of expected inflation. Compare trends using various values of Beta, where Expected Inflation = Inflation + Beta*(Unemployment - Natural Rate of Unemployment):"),
+                           sliderInput("yearRangeIU", label="Range of years to test",
+                                       min=1949, max=2017, value=c(1949, 2017),
+                                       sep=""),
+                           br(),
+                           textOutput("selectionTextIU")
+                         ),
+
+                         mainPanel(
+                           span(strong("The Phillips Curve model")),
+                           span("posits that unemployment and inflation have an inverse relationship. High inflation should correlate with low unemployment, and vice versa. Empirical analysis, however, suggests that this relationship has rarely held in the post-WWII United States."),
+                           br(), br(),
+                           p("Use the panel on the right to conduct linear and nonlinear regressions on historical data over various time periods."),
+                           hr(),
+                           plotOutput("influ3Plot")
+                         )
+           )
+
+  ),
+
+  tabPanel("Natural Rate of Unemployment",
+
+           sidebarLayout(position="right",
+
+                         sidebarPanel(
+                           h4("Modeling Inflation", align=''),
+                           p("In this tab, you can test the relationship using various models of expected inflation. Compare trends using various values of Beta, where Expected Inflation = Inflation + Beta*(Unemployment - Natural Rate of Unemployment):"),
+                           sliderInput("yearRangeUnemp", label="Range of years to test",
+                                       min=1949, max=2017, value=c(1949, 2017),
+                                       sep=""),
+                           br(),
+                           textOutput("selectionTextUnemp")
+                           ),
+
+                         mainPanel(
+                           span(strong("The Phillips Curve model")),
+                           span("posits that unemployment and inflation have an inverse relationship. High inflation should correlate with low unemployment, and vice versa. Empirical analysis, however, suggests that this relationship has rarely held in the post-WWII United States."),
+                           br(), br(),
+                           p("Use the panel on the right to conduct linear and nonlinear regressions on historical data over various time periods."),
+                           hr(),
+                           #plotOutput("u3Plot"),
+                           #plotOutput("u6Plot"),
+                           #plotOutput("u3u6Plot"),
                            plotOutput("nrouPlot")
                          )
            )
@@ -101,7 +136,12 @@ ui <- navbarPage("Empirical Analysis of the Phillips Curve Model",
 
                          sidebarPanel(
                            h4("Modeling Inflation", align=''),
-                           p("In this tab, you can test the relationship using various models of expected inflation. Compare trends using various values of Beta, where Expected Inflation = Inflation + Beta*(Unemployment - Natural Rate of Unemployment):")
+                           p("In this tab, you can test the relationship using various models of expected inflation. Compare trends using various values of Beta, where Expected Inflation = Inflation + Beta*(Unemployment - Natural Rate of Unemployment):"),
+                           br(),
+                           radioButtons("regPlotButtons", label="Select linear or nonlinear regression.",
+                                        choices=c("Linear", "Nonlinear"),
+                                        selected="Linear"),
+                           textOutput("selectionTextReg")
                          ),
 
                          mainPanel(
@@ -110,8 +150,14 @@ ui <- navbarPage("Empirical Analysis of the Phillips Curve Model",
                            br(), br(),
                            p("Use the panel on the right to conduct linear and nonlinear regressions on historical data over various time periods."),
                            hr(),
-                           htmlOutput("linregTable", container = div),
-                           htmlOutput("nonlinregTable", container = div)
+                           conditionalPanel(
+                             condition = "input.regPlotButtons == 'Linear'",
+                             htmlOutput("linregTable", container = div)
+                           ),
+                           conditionalPanel(
+                             condition = "input.regPlotButtons == 'Nonlinear'",
+                             htmlOutput("nonlinregTable", container = div)
+                           )
                          )
            )
 
@@ -124,19 +170,55 @@ ui <- navbarPage("Empirical Analysis of the Phillips Curve Model",
 # Define server logic
 server <- function(input, output) {
 
-  output$selectionText <- renderText({
+  output$selectionTextScenarios <- renderText({
     paste0("You are testing the ",
-           input$yearRange[2] - input$yearRange[1],
+           input$yearRangeScenarios[2] - input$yearRangeScenarios[1],
            "-year period from ",
-           input$yearRange[1],
+           input$yearRangeScenarios[1],
            " to ",
-           input$yearRange[2], ".")
+           input$yearRangeScenarios[2], ".")
+  })
+
+  output$selectionTextUnemp <- renderText({
+    paste0("You are testing the ",
+           input$yearRangeUnemp[2] - input$yearRangeUnemp[1],
+           "-year period from ",
+           input$yearRangeUnemp[1],
+           " to ",
+           input$yearRangeUnemp[2], ".")
+  })
+
+  output$selectionTextInfl <- renderText({
+    paste0("You are testing the ",
+           input$yearRangeInfl[2] - input$yearRangeInfl[1],
+           "-year period from ",
+           input$yearRangeInfl[1],
+           " to ",
+           input$yearRangeInfl[2], ".")
+  })
+
+  output$selectionTextIU <- renderText({
+    paste0("You are testing the ",
+           input$yearRangeIU[2] - input$yearRangeIU[1],
+           "-year period from ",
+           input$yearRangeIU[1],
+           " to ",
+           input$yearRangeIU[2], ".")
+  })
+
+  output$selectionTextReg <- renderText({
+    paste0("You are testing the ",
+           input$yearRangeReg[2] - input$yearRangeReg[1],
+           "-year period from ",
+           input$yearRangeReg[1],
+           " to ",
+           input$yearRangeReg[2], ".")
   })
 
   output$scenariosPlot <- renderPlot({
     plot.infl.exp.nrou(data = pc_nrou,
                        b1 = input$b1, b2 = input$b2, b3 = input$b3,
-                       period_start = input$yearRange[1], period_end = input$yearRange[2],
+                       period_start = input$yearRangeScenarios[1], period_end = input$yearRangeScenarios[2],
                        method = "lm")
   })
 
@@ -165,32 +247,32 @@ server <- function(input, output) {
 
   # Plot inflation over time for the specified period
   output$inflPlot <- renderPlot({
-    plot.pc(data = pc, period_start = input$yearRange[1], period_end = input$yearRange[2])
+    plot.pc(data = pc, period_start = input$yearRangeInfl[1], period_end = input$yearRangeInfl[2])
   })
 
   # Plot unemployment (U3) over time for the specified period
   output$u3Plot <- renderPlot({
-    plot.u3(data = pc, period_start = input$yearRange[1], period_end = input$yearRange[2])
+    plot.u3(data = pc, period_start = input$yearRangeUnemp[1], period_end = input$yearRangeUnemp[2])
   })
 
   # Plot unemployment (U6) over time for the specified period
   output$u6Plot <- renderPlot({
-    plot.u6(data = pc_u6, period_start = input$yearRange[1], period_end = input$yearRange[2])
+    plot.u6(data = pc_u6, period_start = input$yearRangeUnemp[1], period_end = input$yearRangeUnemp[2])
   })
 
   # Plot the natural unemployment rate over time for the specified period
   output$u3u6Plot <- renderPlot({
-    plot.unemployment(data = pc_u6, period_start = input$yearRange[1], period_end = input$yearRange[2])
-  })
-
-  # Jointly plot the inflation rate and unemployment rate over time for the specified period
-  output$influ3Plot <- renderPlot({
-    plot.infl.u3(data = pc, period_start = input$yearRange[1], period_end = input$yearRange[2])
+    plot.unemployment(data = pc_u6, period_start = input$yearRangeUnemp[1], period_end = input$yearRangeUnemp[2])
   })
 
   # Plot the natural unemployment rate over time for the specified period
   output$nrouPlot <- renderPlot({
-    plot.nrou(data = pc_nrou, period_start = input$yearRange[1], period_end = input$yearRange[2])
+    plot.nrou(data = pc_nrou, period_start = input$yearRangeUnemp[1], period_end = input$yearRangeUnemp[2])
+  })
+
+  # Jointly plot the inflation rate and unemployment rate over time for the specified period
+  output$influ3Plot <- renderPlot({
+    plot.infl.u3(data = pc, period_start = input$yearRangeIU[1], period_end = input$yearRangeIU[2])
   })
 
 }
