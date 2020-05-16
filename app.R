@@ -1,65 +1,103 @@
 # Info Section
 
-#### Packages ####
+# Packages #
 
 library(shiny)
 source("helpers/pc.datahelper.R")
 source("helpers/pc.visualizationhelper.R")
 
 # Define UI
-ui <- fluidPage(
+ui <- navbarPage("Empirical Analysis of the Phillips Curve Model",
+  tabPanel("Inflation Scenarios",
+
+           sidebarLayout(position="right",
+
+                         sidebarPanel(
+                           h4("Modeling Inflation", align=''),
+                           p("In this tab, you can test the relationship using various models of expected inflation. Compare trends using various values of Beta, where Expected Inflation = Inflation + Beta*(Unemployment - Natural Rate of Unemployment):"),
+                           numericInput("b1",
+                                        "label" = "Beta 1",
+                                        value = 0.75,
+                                        step = 0.125,
+                                        width = "85px"),
+                           numericInput("b2",
+                                        "label" = "Beta 2",
+                                        value = 1.25,
+                                        step = 0.125,
+                                        width = "85px"),
+                           numericInput("b3",
+                                        "label" = "Beta 3",
+                                        value = 2.25,
+                                        step = 0.125,
+                                        width = "85px"),
+                           sliderInput("yearRange", label="Range of years to test",
+                                       min=1949, max=2017, value=c(1949, 2017),
+                                       sep=""),
+                           br(),
+                           textOutput("selectionText")
+                         ),
+
+                         mainPanel(
+                           span(strong("The Phillips Curve model")),
+                           span("posits that unemployment and inflation have an inverse relationship. High inflation should correlate with low unemployment, and vice versa. Empirical analysis, however, suggests that this relationship has rarely held in the post-WWII United States."),
+                           br(), br(),
+                           p("Use the panel on the right to test the Phillips Curve model using historical data over various time periods and using multiple models of inflation."),
+                           hr(),
+                           plotOutput("scenariosPlot")
+                         )
+           )
+
+  ),
+
+  tabPanel("Charting Unemployment",
+
+           sidebarLayout(position="right",
+
+                         sidebarPanel(
+                           h4("Modeling Inflation", align=''),
+                           p("In this tab, you can test the relationship using various models of expected inflation. Compare trends using various values of Beta, where Expected Inflation = Inflation + Beta*(Unemployment - Natural Rate of Unemployment):")
+                           ),
+
+                         mainPanel(
+                           span(strong("The Phillips Curve model")),
+                           span("posits that unemployment and inflation have an inverse relationship. High inflation should correlate with low unemployment, and vice versa. Empirical analysis, however, suggests that this relationship has rarely held in the post-WWII United States."),
+                           br(), br(),
+                           p("Use the panel on the right to conduct linear and nonlinear regressions on historical data over various time periods."),
+                           hr(),
+                           htmlOutput("linregTable", container = div),
+                           htmlOutput("nonlinregTable", container = div)
+                         )
+           )
+
+  ),
+
+  tabPanel("Regression Analysis",
+
+           sidebarLayout(position="right",
+
+                         sidebarPanel(
+                           h4("Modeling Inflation", align=''),
+                           p("In this tab, you can test the relationship using various models of expected inflation. Compare trends using various values of Beta, where Expected Inflation = Inflation + Beta*(Unemployment - Natural Rate of Unemployment):")
+                         ),
+
+                         mainPanel(
+                           span(strong("The Phillips Curve model")),
+                           span("posits that unemployment and inflation have an inverse relationship. High inflation should correlate with low unemployment, and vice versa. Empirical analysis, however, suggests that this relationship has rarely held in the post-WWII United States."),
+                           br(), br(),
+                           p("Use the panel on the right to explore different types of unemployment data over various time periods."),
+                           hr(),
+                           plotOutput("inflPlot"),
+                           plotOutput("u3Plot"),
+                           plotOutput("u6Plot"),
+                           plotOutput("u3u6Plot"),
+                           plotOutput("influ3Plot"),
+                           plotOutput("nrouPlot")
+                         )
+           )
+
+  )
 
   #shinythemes::themeSelector(),
-
-  titlePanel(h2("Empirical Analysis of the Phillips Curve Model")),
-
-
-  sidebarLayout(position="left",
-
-    sidebarPanel(
-      #h3("Sidebar Panel", align=''),
-      p("The Phillips Curve model posits that unemployment and inflation have an inverse relationship. High inflation is correlated with low unemployment, and vice versa."),
-      p("Empirical analysis, however, suggests that this relationship has rarely held in the post-WWII United States."),
-      p("This application allows users to explore the data for themselves to test for the correlation the Phillips Curve model posits."),
-      br(),
-      #div(img(src="pc_scenarios.png", width=175), align='center'),
-      p("Select three test values for beta, or b, where infl_e = infl + b(U-U_n):"),
-      numericInput("b1",
-                   "label" = "Beta 1",
-                   value = 0.75,
-                   step = 0.125,
-                   width = "85px"),
-      numericInput("b2",
-                   "label" = "Beta 2",
-                   value = 1.25,
-                   step = 0.125,
-                   width = "85px"),
-      numericInput("b3",
-                   "label" = "Beta 3",
-                   value = 2.25,
-                   step = 0.125,
-                   width = "85px"),
-      sliderInput("yearRange", label="Range of years to test",
-                  min=1949, max=2017, value=c(1949, 2017),
-                  sep=""),
-      br(),
-      textOutput("selectionText")
-      ),
-
-    mainPanel(
-      h4("Main Panel", align=''),
-      p("Sidebar text here."),
-      plotOutput("scenariosPlot"),
-      htmlOutput("linregTable", container = div),
-      htmlOutput("nonlinregTable", container = div),
-      plotOutput("inflPlot"),
-      plotOutput("u3Plot"),
-      plotOutput("u6Plot"),
-      plotOutput("u3u6Plot"),
-      plotOutput("influ3Plot"),
-      plotOutput("nrouPlot")
-      )
-  )
 
 )
 
