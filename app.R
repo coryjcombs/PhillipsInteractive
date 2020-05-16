@@ -64,8 +64,32 @@ ui <- navbarPage("Empirical Analysis of the Phillips Curve Model",
                            br(), br(),
                            p("Use the panel on the right to conduct linear and nonlinear regressions on historical data over various time periods."),
                            hr(),
-                           htmlOutput("linregTable", container = div),
-                           htmlOutput("nonlinregTable", container = div)
+                           plotOutput("u3Plot"),
+                           plotOutput("u6Plot"),
+                           plotOutput("u3u6Plot"),
+                         )
+           )
+
+  ),
+
+  tabPanel("Charting Inflation",
+
+           sidebarLayout(position="right",
+
+                         sidebarPanel(
+                           h4("Modeling Inflation", align=''),
+                           p("In this tab, you can test the relationship using various models of expected inflation. Compare trends using various values of Beta, where Expected Inflation = Inflation + Beta*(Unemployment - Natural Rate of Unemployment):")
+                         ),
+
+                         mainPanel(
+                           span(strong("The Phillips Curve model")),
+                           span("posits that unemployment and inflation have an inverse relationship. High inflation should correlate with low unemployment, and vice versa. Empirical analysis, however, suggests that this relationship has rarely held in the post-WWII United States."),
+                           br(), br(),
+                           p("Use the panel on the right to explore different types of unemployment data over various time periods"),
+                           hr(),
+                           plotOutput("inflPlot"),
+                           plotOutput("influ3Plot"),
+                           plotOutput("nrouPlot")
                          )
            )
 
@@ -84,14 +108,10 @@ ui <- navbarPage("Empirical Analysis of the Phillips Curve Model",
                            span(strong("The Phillips Curve model")),
                            span("posits that unemployment and inflation have an inverse relationship. High inflation should correlate with low unemployment, and vice versa. Empirical analysis, however, suggests that this relationship has rarely held in the post-WWII United States."),
                            br(), br(),
-                           p("Use the panel on the right to explore different types of unemployment data over various time periods."),
+                           p("Use the panel on the right to conduct linear and nonlinear regressions on historical data over various time periods."),
                            hr(),
-                           plotOutput("inflPlot"),
-                           plotOutput("u3Plot"),
-                           plotOutput("u6Plot"),
-                           plotOutput("u3u6Plot"),
-                           plotOutput("influ3Plot"),
-                           plotOutput("nrouPlot")
+                           htmlOutput("linregTable", container = div),
+                           htmlOutput("nonlinregTable", container = div)
                          )
            )
 
